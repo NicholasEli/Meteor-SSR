@@ -7,7 +7,8 @@ class Home extends React.Component {
     super(props)
 
     this.state = {
-      data: ''
+      data: '',
+      dataList: null
     }
   }
 
@@ -25,12 +26,12 @@ class Home extends React.Component {
         return
       }
 
-      this.setState({ data: '' })
+      this.setState({ data: '', dataList: res })
     })
   }
 
   componentDidMount() {
-    console.log('mount', this.props)
+    this.setState({ dataList: this.props.data })
   }
 
   render() {
@@ -48,6 +49,15 @@ class Home extends React.Component {
         <a onClick={() => this.addData()}>Add Data</a>
         <br />
         <br />
+        {Meteor.isClient && this.state.dataList && (
+          <div>
+            {this.state.dataList.map((key, index) => (
+              <p key={index}>{key.text}</p>
+            ))}
+          </div>
+        )}
+        <br />
+        <br />
         <Link to="/page-two">Page Two</Link>
       </div>
     )
@@ -55,6 +65,5 @@ class Home extends React.Component {
 }
 
 export default createContainer((params) => {
-  console.log('params', params)
-  return { data: 1 }
+  return { data: params.data }
 }, Home)
